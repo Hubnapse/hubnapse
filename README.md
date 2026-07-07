@@ -1,16 +1,37 @@
-## Hi there 👋
+# Hubnapse
 
-<!--
-**Hubnapse/hubnapse** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+AI作品と制作プロセスを共有するSNS
 
-Here are some ideas to get you started:
+## Vision
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+Hubnapseは、AIで作った作品や制作プロセスを気軽に公開し、
+同じ興味を持つ人と交流できるプラットフォームです。
+
+AIを活用してものづくりをする人は増えていますが、
+GitHubでは成果物しか伝わらず、
+SNSでは制作プロセスやノウハウが埋もれてしまいます。
+
+Hubnapseでは、
+作品だけでなく「どのAIをどう活用して作ったのか」まで共有することで、
+AIでものづくりをする人が学び合い、つながれる場所を目指します。
+
+## MVP
+
+- 投稿
+- タイムライン
+- コメント
+- プロフィール
+
+## Future
+
+- 再現する（AI体験を再現）
+- Marketplace
+- コミュニティ
+- スカウト
+
+
+## Changelog
+
+### 2026-07-07
+
+- Hubnapse プロジェクト開始
