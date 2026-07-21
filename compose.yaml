@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: hubnapse-postgres
+    environment:
+      POSTGRES_DB: hubnapse
+      POSTGRES_USER: hubnapse
+      POSTGRES_PASSWORD: hubnapse
+    ports:
+      - "5433:5432"
+    volumes:
+      - hubnapse-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  hubnapse-postgres-data:
