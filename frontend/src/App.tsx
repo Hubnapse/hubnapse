@@ -1,3 +1,4 @@
+import "./App.css";
 import { useEffect, useState } from "react";
 import type { Post } from "./types/Post";
 
@@ -14,42 +15,51 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <main className="post-list-page">
       <h1>Hubnapse</h1>
 
-      <div>
+      <div className="post-list">
         {posts.map((post) => (
-          <article key={post.id}>
-            <h2>{post.title}</h2>
-
+          <article className="post-card" key={post.id}>
             {post.imageUrl && (
-              <img src={post.imageUrl} alt={post.title} width="300" />
+              <img
+                className="post-card__image"
+                src={post.imageUrl}
+                alt={post.title}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
             )}
 
-            <p>{post.description}</p>
+            <div className="post-card__body">
+              <h2 className="post-card__title">{post.title}</h2>
 
-            <h3>何を作ったか</h3>
-            <p>{post.whatCreated}</p>
+              <p>{post.description}</p>
 
-            {post.tips && (
-              <>
-                <h3>Tips</h3>
-                <p>{post.tips}</p>
-              </>
-            )}
+              <section className="post-card__section">
+                <h3>何を作ったか</h3>
+                <p>{post.whatCreated}</p>
+              </section>
 
-            {post.bestPrompt && (
-              <>
-                <h3>Best Prompt</h3>
-                <p>{post.bestPrompt}</p>
-              </>
-            )}
+              {post.tips && (
+                <section className="post-card__section">
+                  <h3>Tips</h3>
+                  <p>{post.tips}</p>
+                </section>
+              )}
 
-            <hr />
+              {post.bestPrompt && (
+                <section className="post-card__section">
+                  <h3>Best Prompt</h3>
+                  <p>{post.bestPrompt}</p>
+                </section>
+              )}
+            </div>
           </article>
         ))}
       </div>
-    </div>
+    </main>
   );
 }
 
