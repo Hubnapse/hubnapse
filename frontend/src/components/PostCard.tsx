@@ -1,4 +1,5 @@
 import type { Post } from "../types/Post";
+import PostComments from "./comments/PostComments";
 
 type PostCardProps = {
   post: Post;
@@ -87,6 +88,8 @@ function PostCard({ post, currentUserId, isDeleting, onEdit, onDelete }: PostCar
             <p>{post.bestPrompt}</p>
           </section>
         )}
+
+        <PostComments postId={post.id} currentUserId={currentUserId} />
       </div>
     </article>
   );
