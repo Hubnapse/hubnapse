@@ -1,5 +1,13 @@
+export type PostAuthor = {
+  id: number;
+  username: string;
+  displayName: string;
+  iconUrl: string | null;
+};
+
 export type Post = {
   id: number;
+  author: PostAuthor;
   title: string;
   description: string | null;
   imageUrl: string;
