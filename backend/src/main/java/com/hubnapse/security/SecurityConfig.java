@@ -67,6 +67,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/*/likes").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/users/*/follow").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/users/*/follow").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me/ai-tools").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/ai-tools").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jsonAuthenticationEntryPoint)

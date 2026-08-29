@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Post } from "../types/Post";
 import PostComments from "./comments/PostComments";
 
@@ -41,19 +42,21 @@ function PostCard({
           <div>
             <h2 className="post-card__title">{post.title}</h2>
             <div className="post-card__author">
-              {post.author.iconUrl && (
-                <img
-                  className="post-card__author-icon"
-                  src={post.author.iconUrl}
-                  alt=""
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-              )}
-              <span className="post-card__author-name">
-                {post.author.displayName}（@{post.author.username}）
-              </span>
+              <Link to={`/users/${post.author.username}`} className="post-card__author-link">
+                {post.author.iconUrl && (
+                  <img
+                    className="post-card__author-icon"
+                    src={post.author.iconUrl}
+                    alt=""
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                )}
+                <span className="post-card__author-name">
+                  {post.author.displayName}（@{post.author.username}）
+                </span>
+              </Link>
               {canFollow && (
                 <button
                   type="button"
