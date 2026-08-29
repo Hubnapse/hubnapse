@@ -382,3 +382,122 @@
   line-height: 1.6;
   color: #1a1a1a;
 }
+
+.auth-panel,
+.current-user-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px 24px;
+  box-sizing: border-box;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+}
+
+.auth-panel__tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-panel__tab,
+.auth-panel__tab--active {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #444;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-panel__tab--active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+.auth-panel__error,
+.current-user-bar__error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.auth-panel__success {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #eaf7ea;
+  color: #1e7a34;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auth-form__field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.auth-form__field input,
+.auth-form__field textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.auth-form__field textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.auth-form button,
+.current-user-bar button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.current-user-bar {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.current-user-bar__name {
+  margin: 0;
+  font-weight: 600;
+  color: #1a1a1a;
+}
