@@ -69,5 +69,11 @@ export function useAuth() {
     }
   }, []);
 
-  return { user, initializing, submitting, authError, login, register, logout };
+  const updateUser = useCallback((updates: Partial<User>) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : prev));
+  }, []);
+
+  return { user, initializing, submitting, authError, login, register, logout, updateUser };
 }
+
+export type AuthState = ReturnType<typeof useAuth>;

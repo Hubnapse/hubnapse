@@ -18,7 +18,7 @@ public record UserRegisterRequest(
 
         @NotBlank @Size(min = 8, max = 72) String password,
 
-        String iconUrl,
+        @Size(max = 500) String iconUrl,
 
         @Size(max = 300) String bio
 

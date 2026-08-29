@@ -117,4 +117,13 @@ public class GlobalExceptionHandler {
         return Map.of(
                 "message", ex.getMessage());
     }
+
+    @ExceptionHandler(AiToolNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleAiToolNotFoundException(
+            AiToolNotFoundException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
 }
