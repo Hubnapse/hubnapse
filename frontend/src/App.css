@@ -412,6 +412,166 @@
   color: #1a1a1a;
 }
 
+.post-comments {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e2e2;
+}
+
+.post-comments__title {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.post-comments__error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #fdecea;
+  color: #b3261e;
+}
+
+.post-comments__login-required {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px dashed #ccc;
+  background: #fafafa;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.comment-thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.comment-item {
+  padding: 10px 14px;
+  border-left: 2px solid #e2e2e2;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.comment-item .comment-item {
+  margin-top: 10px;
+}
+
+.comment-item__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comment-item__author-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-item__author-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.comment-item__content {
+  margin: 4px 0 6px;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  color: #1a1a1a;
+}
+
+.comment-item__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.comment-item__reply,
+.comment-item__delete {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #666;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.comment-item__delete {
+  color: #b02a2a;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.comment-form__error {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fdecea;
+  color: #b3261e;
+  font-size: 0.85rem;
+}
+
+.comment-form__textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  min-height: 60px;
+  resize: vertical;
+}
+
+.comment-form__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.comment-form button[type="submit"] {
+  align-self: flex-start;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.comment-form__cancel {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
 .auth-panel,
 .current-user-bar {
   display: flex;

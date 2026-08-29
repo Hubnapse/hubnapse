@@ -72,4 +72,22 @@ public class GlobalExceptionHandler {
         return Map.of(
                 "message", "メールアドレスまたはパスワードが正しくありません");
     }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleCommentNotFoundException(
+            CommentNotFoundException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidParentCommentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleInvalidParentCommentException(
+            InvalidParentCommentException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
 }
