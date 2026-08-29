@@ -5,6 +5,9 @@ export type User = {
   email: string;
   iconUrl: string | null;
   bio: string | null;
+  followerCount: number;
+  followingCount: number;
+  followedByCurrentUser: boolean;
   createdAt: string;
   updatedAt: string;
 };

@@ -357,6 +357,48 @@
   color: #666;
 }
 
+.post-card__follow,
+.post-card__unfollow {
+  padding: 2px 10px;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.post-card__unfollow {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.post-card__like-row {
+  margin-top: 16px;
+}
+
+.post-card__like {
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: #fff;
+  color: #444;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.post-card__like--active {
+  border-color: #e0a0a0;
+  color: #b02a2a;
+}
+
 .post-card__actions {
   display: flex;
   flex-shrink: 0;

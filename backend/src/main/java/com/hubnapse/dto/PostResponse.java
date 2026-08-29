@@ -6,6 +6,8 @@ public record PostResponse(
 
                 Long id,
                 PostAuthorResponse author,
+                long likeCount,
+                boolean likedByCurrentUser,
                 String title,
                 String description,
                 String imageUrl,

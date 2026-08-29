@@ -48,7 +48,7 @@ class CommentControllerSecurityTest {
 
     private CommentResponse sampleCommentResponse() {
 
-        PostAuthorResponse author = new PostAuthorResponse(1L, "taro", "太郎", null);
+        PostAuthorResponse author = new PostAuthorResponse(1L, "taro", "太郎", null, false);
 
         return new CommentResponse(10L, "コメント本文", author, null, OffsetDateTime.now());
     }
@@ -56,7 +56,7 @@ class CommentControllerSecurityTest {
     @Test
     void findByPostId_permitAllWithoutAuthentication() throws Exception {
 
-        when(commentService.findByPostId(100L)).thenReturn(List.of());
+        when(commentService.findByPostId(100L, null)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/posts/100/comments"))
                 .andExpect(status().isOk());

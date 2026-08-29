@@ -90,4 +90,31 @@ public class GlobalExceptionHandler {
         return Map.of(
                 "message", ex.getMessage());
     }
+
+    @ExceptionHandler(AlreadyLikedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleAlreadyLikedException(
+            AlreadyLikedException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyFollowingException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> handleAlreadyFollowingException(
+            AlreadyFollowingException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
+
+    @ExceptionHandler(SelfFollowException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleSelfFollowException(
+            SelfFollowException ex) {
+
+        return Map.of(
+                "message", ex.getMessage());
+    }
 }

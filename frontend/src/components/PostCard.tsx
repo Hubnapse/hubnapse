@@ -7,10 +7,21 @@ type PostCardProps = {
   isDeleting: boolean;
   onEdit: (post: Post) => void;
   onDelete: (id: number) => void;
+  onToggleLike: (postId: number, currentlyLiked: boolean) => void;
+  onToggleFollow: (userId: number, currentlyFollowed: boolean) => void;
 };
 
-function PostCard({ post, currentUserId, isDeleting, onEdit, onDelete }: PostCardProps) {
+function PostCard({
+  post,
+  currentUserId,
+  isDeleting,
+  onEdit,
+  onDelete,
+  onToggleLike,
+  onToggleFollow,
+}: PostCardProps) {
   const isOwner = currentUserId !== null && currentUserId === post.author.id;
+  const canFollow = currentUserId !== null && !isOwner;
 
   return (
     <article className="post-card">
@@ -43,6 +54,19 @@ function PostCard({ post, currentUserId, isDeleting, onEdit, onDelete }: PostCar
               <span className="post-card__author-name">
                 {post.author.displayName}（@{post.author.username}）
               </span>
+              {canFollow && (
+                <button
+                  type="button"
+                  className={
+                    post.author.followedByCurrentUser
+                      ? "post-card__unfollow"
+                      : "post-card__follow"
+                  }
+                  onClick={() => onToggleFollow(post.author.id, post.author.followedByCurrentUser)}
+                >
+                  {post.author.followedByCurrentUser ? "フォロー中" : "フォローする"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -88,6 +112,19 @@ function PostCard({ post, currentUserId, isDeleting, onEdit, onDelete }: PostCar
             <p>{post.bestPrompt}</p>
           </section>
         )}
+
+        <div className="post-card__like-row">
+          <button
+            type="button"
+            className={
+              post.likedByCurrentUser ? "post-card__like post-card__like--active" : "post-card__like"
+            }
+            onClick={() => onToggleLike(post.id, post.likedByCurrentUser)}
+            disabled={currentUserId === null}
+          >
+            {post.likedByCurrentUser ? "♥" : "♡"} {post.likeCount}
+          </button>
+        </div>
 
         <PostComments postId={post.id} currentUserId={currentUserId} />
       </div>

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubnapse.dto.PostRequest;
 import com.hubnapse.dto.PostResponse;
+import com.hubnapse.security.CurrentUser;
+import com.hubnapse.service.PostLikeService;
 import com.hubnapse.service.PostService;
 
 import jakarta.validation.Valid;
@@ -27,15 +29,16 @@ import lombok.RequiredArgsConstructor;
 public class PostController {
 
     private final PostService postService;
+    private final PostLikeService postLikeService;
 
     @GetMapping
-    public List<PostResponse> findAll() {
-        return postService.findAll();
+    public List<PostResponse> findAll(Authentication authentication) {
+        return postService.findAll(CurrentUser.emailOrNull(authentication));
     }
 
     @GetMapping("/{id}")
-    public PostResponse findById(@PathVariable Long id) {
-        return postService.findById(id);
+    public PostResponse findById(@PathVariable Long id, Authentication authentication) {
+        return postService.findById(id, CurrentUser.emailOrNull(authentication));
     }
 
     @PostMapping
@@ -59,5 +62,17 @@ public class PostController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id, Authentication authentication) {
         postService.delete(id, authentication.getName());
+    }
+
+    @PostMapping("/{postId}/likes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void like(@PathVariable Long postId, Authentication authentication) {
+        postLikeService.like(postId, authentication.getName());
+    }
+
+    @DeleteMapping("/{postId}/likes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unlike(@PathVariable Long postId, Authentication authentication) {
+        postLikeService.unlike(postId, authentication.getName());
     }
 }

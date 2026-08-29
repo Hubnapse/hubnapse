@@ -21,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FollowService followService;
 
     public UserResponse register(UserRegisterRequest request) {
 
@@ -63,6 +64,9 @@ public class UserService {
 
     private UserResponse toResponse(UserEntity entity) {
 
+        long followerCount = followService.getFollowerCount(entity.getId());
+        long followingCount = followService.getFollowingCount(entity.getId());
+
         return new UserResponse(
                 entity.getId(),
                 entity.getUsername(),
@@ -70,6 +74,10 @@ public class UserService {
                 entity.getEmail(),
                 entity.getIconUrl(),
                 entity.getBio(),
+                followerCount,
+                followingCount,
+                // UserResponseは現状常に本人のプロフィールとしてのみ返されるため、自己フォローは常にfalse
+                false,
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
     }

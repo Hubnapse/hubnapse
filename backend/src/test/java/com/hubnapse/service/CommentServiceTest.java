@@ -44,6 +44,9 @@ class CommentServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private FollowService followService;
+
     @InjectMocks
     private CommentService commentService;
 
@@ -100,7 +103,7 @@ class CommentServiceTest {
         when(commentRepository.findByPostIdOrderByCreatedAtAsc(100L))
                 .thenReturn(List.of(topLevelComment, reply));
 
-        List<CommentResponse> responses = commentService.findByPostId(100L);
+        List<CommentResponse> responses = commentService.findByPostId(100L, null);
 
         assertThat(responses).hasSize(2);
         assertThat(responses.get(0).parentId()).isNull();
@@ -114,7 +117,7 @@ class CommentServiceTest {
 
         when(postRepository.existsById(999L)).thenReturn(false);
 
-        assertThatThrownBy(() -> commentService.findByPostId(999L))
+        assertThatThrownBy(() -> commentService.findByPostId(999L, null))
                 .isInstanceOf(PostNotFoundException.class);
     }
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hubnapse.dto.CommentRequest;
 import com.hubnapse.dto.CommentResponse;
+import com.hubnapse.security.CurrentUser;
 import com.hubnapse.service.CommentService;
 
 import jakarta.validation.Valid;
@@ -26,8 +27,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/api/posts/{postId}/comments")
-    public List<CommentResponse> findByPostId(@PathVariable Long postId) {
-        return commentService.findByPostId(postId);
+    public List<CommentResponse> findByPostId(@PathVariable Long postId, Authentication authentication) {
+        return commentService.findByPostId(postId, CurrentUser.emailOrNull(authentication));
     }
 
     @PostMapping("/api/posts/{postId}/comments")

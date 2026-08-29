@@ -3,13 +3,16 @@ package com.hubnapse.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +39,12 @@ class PostServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PostLikeService postLikeService;
+
+    @Mock
+    private FollowService followService;
 
     @InjectMocks
     private PostService postService;
@@ -89,6 +98,9 @@ class PostServiceTest {
         assertThat(response.author().id()).isEqualTo(1L);
         assertThat(response.author().username()).isEqualTo("taro");
         assertThat(response.title()).isEqualTo("新しいタイトル");
+        assertThat(response.likeCount()).isZero();
+        assertThat(response.likedByCurrentUser()).isFalse();
+        assertThat(response.author().followedByCurrentUser()).isFalse();
     }
 
     @Test
@@ -105,11 +117,16 @@ class PostServiceTest {
 
         when(postRepository.findById(10L)).thenReturn(Optional.of(postEntity));
         when(postRepository.save(any(PostEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(postLikeService.countByPostId(10L)).thenReturn(3L);
+        when(postLikeService.isLikedBy(10L, 1L)).thenReturn(true);
 
         PostResponse response = postService.update(10L, postRequest, "taro@example.com");
 
         assertThat(response.title()).isEqualTo("新しいタイトル");
         assertThat(response.author().username()).isEqualTo("taro");
+        assertThat(response.likeCount()).isEqualTo(3L);
+        assertThat(response.likedByCurrentUser()).isTrue();
+        assertThat(response.author().followedByCurrentUser()).isFalse();
     }
 
     @Test
@@ -158,11 +175,30 @@ class PostServiceTest {
 
         when(postRepository.findAll()).thenReturn(List.of(postEntity));
 
-        List<PostResponse> responses = postService.findAll();
+        List<PostResponse> responses = postService.findAll(null);
 
         assertThat(responses).hasSize(1);
         assertThat(responses.get(0).author().displayName()).isEqualTo("太郎");
         assertThat(responses.get(0).author().iconUrl()).isEqualTo("https://example.com/taro.png");
+        assertThat(responses.get(0).likeCount()).isZero();
+        assertThat(responses.get(0).likedByCurrentUser()).isFalse();
+    }
+
+    @Test
+    void findAll_whenLoggedIn_includesLikeAndFollowStatusFromBatchLookups() {
+
+        when(postRepository.findAll()).thenReturn(List.of(postEntity));
+        when(userRepository.findIdByEmail("jiro@example.com")).thenReturn(Optional.of(2L));
+        when(postLikeService.countGroupedByPostIds(List.of(10L))).thenReturn(Map.of(10L, 5L));
+        when(postLikeService.findLikedPostIds(eq(2L), any())).thenReturn(Set.of(10L));
+        when(followService.findFollowingIds(eq(2L), any())).thenReturn(Set.of(1L));
+
+        List<PostResponse> responses = postService.findAll("jiro@example.com");
+
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).likeCount()).isEqualTo(5L);
+        assertThat(responses.get(0).likedByCurrentUser()).isTrue();
+        assertThat(responses.get(0).author().followedByCurrentUser()).isTrue();
     }
 
     @Test
@@ -170,8 +206,26 @@ class PostServiceTest {
 
         when(postRepository.findById(10L)).thenReturn(Optional.of(postEntity));
 
-        PostResponse response = postService.findById(10L);
+        PostResponse response = postService.findById(10L, null);
 
         assertThat(response.author().username()).isEqualTo("taro");
+        assertThat(response.likeCount()).isZero();
+        assertThat(response.likedByCurrentUser()).isFalse();
+    }
+
+    @Test
+    void findById_whenLoggedIn_includesLikeAndFollowStatus() {
+
+        when(postRepository.findById(10L)).thenReturn(Optional.of(postEntity));
+        when(userRepository.findIdByEmail("jiro@example.com")).thenReturn(Optional.of(2L));
+        when(postLikeService.countByPostId(10L)).thenReturn(7L);
+        when(postLikeService.isLikedBy(10L, 2L)).thenReturn(true);
+        when(followService.isFollowing(2L, 1L)).thenReturn(true);
+
+        PostResponse response = postService.findById(10L, "jiro@example.com");
+
+        assertThat(response.likeCount()).isEqualTo(7L);
+        assertThat(response.likedByCurrentUser()).isTrue();
+        assertThat(response.author().followedByCurrentUser()).isTrue();
     }
 }
