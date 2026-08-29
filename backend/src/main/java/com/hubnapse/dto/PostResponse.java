@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 public record PostResponse(
 
                 Long id,
+                PostAuthorResponse author,
                 String title,
                 String description,
                 String imageUrl,

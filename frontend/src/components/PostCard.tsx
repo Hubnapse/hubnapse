@@ -2,12 +2,15 @@ import type { Post } from "../types/Post";
 
 type PostCardProps = {
   post: Post;
+  currentUserId: number | null;
   isDeleting: boolean;
   onEdit: (post: Post) => void;
   onDelete: (id: number) => void;
 };
 
-function PostCard({ post, isDeleting, onEdit, onDelete }: PostCardProps) {
+function PostCard({ post, currentUserId, isDeleting, onEdit, onDelete }: PostCardProps) {
+  const isOwner = currentUserId !== null && currentUserId === post.author.id;
+
   return (
     <article className="post-card">
       {post.imageUrl && (
@@ -23,25 +26,45 @@ function PostCard({ post, isDeleting, onEdit, onDelete }: PostCardProps) {
 
       <div className="post-card__body">
         <div className="post-card__header">
-          <h2 className="post-card__title">{post.title}</h2>
-          <div className="post-card__actions">
-            <button
-              type="button"
-              className="post-card__edit"
-              onClick={() => onEdit(post)}
-              disabled={isDeleting}
-            >
-              編集
-            </button>
-            <button
-              type="button"
-              className="post-card__delete"
-              onClick={() => onDelete(post.id)}
-              disabled={isDeleting}
-            >
-              {isDeleting ? "削除中..." : "削除"}
-            </button>
+          <div>
+            <h2 className="post-card__title">{post.title}</h2>
+            <div className="post-card__author">
+              {post.author.iconUrl && (
+                <img
+                  className="post-card__author-icon"
+                  src={post.author.iconUrl}
+                  alt=""
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              )}
+              <span className="post-card__author-name">
+                {post.author.displayName}（@{post.author.username}）
+              </span>
+            </div>
           </div>
+
+          {isOwner && (
+            <div className="post-card__actions">
+              <button
+                type="button"
+                className="post-card__edit"
+                onClick={() => onEdit(post)}
+                disabled={isDeleting}
+              >
+                編集
+              </button>
+              <button
+                type="button"
+                className="post-card__delete"
+                onClick={() => onDelete(post.id)}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "削除中..." : "削除"}
+              </button>
+            </div>
+          )}
         </div>
 
         <p>{post.description}</p>

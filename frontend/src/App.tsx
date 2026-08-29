@@ -155,18 +155,23 @@ function App() {
           />
         ))}
 
-      <PostForm
-        form={form}
-        editingId={editingId}
-        submitting={submitting}
-        error={error}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        onCancelEdit={handleCancelEdit}
-      />
+      {auth.user ? (
+        <PostForm
+          form={form}
+          editingId={editingId}
+          submitting={submitting}
+          error={error}
+          onChange={handleChange}
+          onSubmit={handleSubmit}
+          onCancelEdit={handleCancelEdit}
+        />
+      ) : (
+        !auth.initializing && <p className="post-form__login-required">投稿するにはログインしてください</p>
+      )}
 
       <PostList
         posts={posts}
+        currentUserId={auth.user?.id ?? null}
         deletingId={deletingId}
         onEdit={handleEdit}
         onDelete={handleDelete}
