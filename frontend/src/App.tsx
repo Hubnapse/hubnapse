@@ -8,6 +8,8 @@ import PostList from "./components/PostList";
 import AuthPanel from "./components/auth/AuthPanel";
 import CurrentUserBar from "./components/auth/CurrentUserBar";
 import { apiFetch, extractErrorMessage } from "./api/http";
+import { likePost, unlikePost } from "./api/likeApi";
+import { followUser, unfollowUser } from "./api/followApi";
 import { useAuth } from "./hooks/useAuth";
 
 const initialFormState: PostFormValues = {
@@ -81,6 +83,60 @@ function App() {
       );
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleToggleLike = async (postId: number, currentlyLiked: boolean) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? { ...p, likedByCurrentUser: !currentlyLiked, likeCount: p.likeCount + (currentlyLiked ? -1 : 1) }
+          : p,
+      ),
+    );
+
+    try {
+      if (currentlyLiked) {
+        await unlikePost(postId);
+      } else {
+        await likePost(postId);
+      }
+    } catch (err) {
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId
+            ? { ...p, likedByCurrentUser: currentlyLiked, likeCount: p.likeCount + (currentlyLiked ? 1 : -1) }
+            : p,
+        ),
+      );
+      setError(err instanceof Error ? err.message : "いいね操作に失敗しました");
+    }
+  };
+
+  const handleToggleFollow = async (userId: number, currentlyFollowed: boolean) => {
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.author.id === userId
+          ? { ...p, author: { ...p.author, followedByCurrentUser: !currentlyFollowed } }
+          : p,
+      ),
+    );
+
+    try {
+      if (currentlyFollowed) {
+        await unfollowUser(userId);
+      } else {
+        await followUser(userId);
+      }
+    } catch (err) {
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.author.id === userId
+            ? { ...p, author: { ...p.author, followedByCurrentUser: currentlyFollowed } }
+            : p,
+        ),
+      );
+      setError(err instanceof Error ? err.message : "フォロー操作に失敗しました");
     }
   };
 
@@ -175,6 +231,8 @@ function App() {
         deletingId={deletingId}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onToggleLike={handleToggleLike}
+        onToggleFollow={handleToggleFollow}
       />
     </main>
   );

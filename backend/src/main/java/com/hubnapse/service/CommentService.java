@@ -2,6 +2,7 @@ package com.hubnapse.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,30 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final FollowService followService;
 
-    public List<CommentResponse> findByPostId(Long postId) {
+    public List<CommentResponse> findByPostId(Long postId, String viewerEmail) {
 
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException(postId);
         }
 
-        return commentRepository.findByPostIdOrderByCreatedAtAsc(postId)
-                .stream()
-                .map(this::toResponse)
+        List<CommentEntity> comments = commentRepository.findByPostIdOrderByCreatedAtAsc(postId);
+
+        if (comments.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> authorIds = comments.stream()
+                .map(comment -> comment.getAuthor().getId())
+                .distinct()
+                .toList();
+
+        Long viewerId = resolveViewerId(viewerEmail);
+        Set<Long> followedAuthorIds = followService.findFollowingIds(viewerId, authorIds);
+
+        return comments.stream()
+                .map(comment -> toResponse(comment, followedAuthorIds.contains(comment.getAuthor().getId())))
                 .toList();
     }
 
@@ -71,7 +86,8 @@ public class CommentService {
 
         CommentEntity savedEntity = commentRepository.save(commentEntity);
 
-        return toResponse(savedEntity);
+        // 投稿者は自分自身のため、著者のフォロー状態は必ずfalse
+        return toResponse(savedEntity, false);
     }
 
     public void delete(Long commentId, String requesterEmail) {
@@ -86,7 +102,16 @@ public class CommentService {
         commentRepository.delete(commentEntity);
     }
 
-    private CommentResponse toResponse(CommentEntity entity) {
+    private Long resolveViewerId(String viewerEmail) {
+
+        if (viewerEmail == null) {
+            return null;
+        }
+
+        return userRepository.findIdByEmail(viewerEmail).orElse(null);
+    }
+
+    private CommentResponse toResponse(CommentEntity entity, boolean authorFollowedByCurrentUser) {
 
         UserEntity author = entity.getAuthor();
 
@@ -94,7 +119,8 @@ public class CommentService {
                 author.getId(),
                 author.getUsername(),
                 author.getDisplayName(),
-                author.getIconUrl());
+                author.getIconUrl(),
+                authorFollowedByCurrentUser);
 
         Long parentId = entity.getParent() != null ? entity.getParent().getId() : null;
 

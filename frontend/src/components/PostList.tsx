@@ -7,9 +7,19 @@ type PostListProps = {
   deletingId: number | null;
   onEdit: (post: Post) => void;
   onDelete: (id: number) => void;
+  onToggleLike: (postId: number, currentlyLiked: boolean) => void;
+  onToggleFollow: (userId: number, currentlyFollowed: boolean) => void;
 };
 
-function PostList({ posts, currentUserId, deletingId, onEdit, onDelete }: PostListProps) {
+function PostList({
+  posts,
+  currentUserId,
+  deletingId,
+  onEdit,
+  onDelete,
+  onToggleLike,
+  onToggleFollow,
+}: PostListProps) {
   return (
     <div className="post-list">
       {posts.map((post) => (
@@ -20,6 +30,8 @@ function PostList({ posts, currentUserId, deletingId, onEdit, onDelete }: PostLi
           isDeleting={deletingId === post.id}
           onEdit={onEdit}
           onDelete={onDelete}
+          onToggleLike={onToggleLike}
+          onToggleFollow={onToggleFollow}
         />
       ))}
     </div>

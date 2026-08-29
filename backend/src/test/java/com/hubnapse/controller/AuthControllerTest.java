@@ -44,6 +44,7 @@ class AuthControllerTest {
 
         UserResponse response = new UserResponse(
                 1L, "taro", "太郎", "taro@example.com", null, null,
+                0L, 0L, false,
                 OffsetDateTime.now(), OffsetDateTime.now());
 
         when(authService.login(any(), any(), any())).thenReturn(response);

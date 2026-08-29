@@ -3,6 +3,7 @@ package com.hubnapse.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -32,6 +33,7 @@ import com.hubnapse.dto.PostResponse;
 import com.hubnapse.security.JsonAccessDeniedHandler;
 import com.hubnapse.security.JsonAuthenticationEntryPoint;
 import com.hubnapse.security.SecurityConfig;
+import com.hubnapse.service.PostLikeService;
 import com.hubnapse.service.PostService;
 
 @WebMvcTest(PostController.class)
@@ -50,21 +52,24 @@ class PostControllerSecurityTest {
     private PostService postService;
 
     @MockitoBean
+    private PostLikeService postLikeService;
+
+    @MockitoBean
     private UserDetailsService userDetailsService;
 
     private PostResponse samplePostResponse() {
 
-        PostAuthorResponse author = new PostAuthorResponse(1L, "taro", "太郎", null);
+        PostAuthorResponse author = new PostAuthorResponse(1L, "taro", "太郎", null, false);
 
         return new PostResponse(
-                10L, author, "タイトル", "説明", "https://example.com/a.png",
+                10L, author, 0L, false, "タイトル", "説明", "https://example.com/a.png",
                 "イラスト", "tips", "prompt", OffsetDateTime.now(), OffsetDateTime.now());
     }
 
     @Test
     void findAll_remainsPermitAllWithoutAuthentication() throws Exception {
 
-        when(postService.findAll()).thenReturn(List.of());
+        when(postService.findAll(null)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/posts"))
                 .andExpect(status().isOk());
@@ -73,7 +78,7 @@ class PostControllerSecurityTest {
     @Test
     void findById_remainsPermitAllWithoutAuthentication() throws Exception {
 
-        when(postService.findById(10L)).thenReturn(samplePostResponse());
+        when(postService.findById(eq(10L), isNull())).thenReturn(samplePostResponse());
 
         mockMvc.perform(get("/api/posts/10"))
                 .andExpect(status().isOk())
@@ -167,5 +172,37 @@ class PostControllerSecurityTest {
                 .with(user("jiro@example.com"))
                 .with(csrf()))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void like_withoutAuthentication_returns401() throws Exception {
+
+        mockMvc.perform(post("/api/posts/10/likes").with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void like_withAuthentication_returns204() throws Exception {
+
+        mockMvc.perform(post("/api/posts/10/likes")
+                .with(user("taro@example.com"))
+                .with(csrf()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void unlike_withoutAuthentication_returns401() throws Exception {
+
+        mockMvc.perform(delete("/api/posts/10/likes").with(csrf()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void unlike_withAuthentication_returns204() throws Exception {
+
+        mockMvc.perform(delete("/api/posts/10/likes")
+                .with(user("taro@example.com"))
+                .with(csrf()))
+                .andExpect(status().isNoContent());
     }
 }

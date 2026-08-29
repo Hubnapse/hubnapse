@@ -10,6 +10,9 @@ public record UserResponse(
         String email,
         String iconUrl,
         String bio,
+        long followerCount,
+        long followingCount,
+        boolean followedByCurrentUser,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 
